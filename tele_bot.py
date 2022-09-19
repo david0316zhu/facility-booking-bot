@@ -35,7 +35,7 @@ ROOMS = {"LKCSB Classroom 2": ["2-1"], "LKCSB Classroom 3": ["3-2", "3-3", "3-4"
                                    "4-11", "4-12", "4-13", "4-14", "4-15", "4-16", "4-17", "4-18"],
          "LKSLIB Project Room 5": ["5-1", "5-2", "5-3", "5-4", "5-5", "5-6", "5-7"], "LKSLIB Study Booth 2": ["2-1", "2-2", "2-3", "2-4", "2-5"],
          "LKSLIB Study Booth 3": ["3-1"], "LKSLIB Study Booth 4": ["4-1", "4-2", "4-3"],
-         "SOA Classroom 2": [2-1], "SOA GSR 2": ["2-1", "2-2", "2-3", "2-4", "2-5", "2-6", "2-7", "2-8", "2-9"],
+         "SOA Classroom 2": ["2-1"], "SOA GSR 2": ["2-1", "2-2", "2-3", "2-4", "2-5", "2-6", "2-7", "2-8", "2-9"],
          "SOA GSR 3": ["3-1", "3-2", "3-3", "3-4", "3-5", "3-6", "3-7", "3-8", "3-9", "3-10"],
          "SOA Seminar Room 1": ["1-1", "1-2", "1-3"], "SOA Seminar Room 2": ["2-1", "2-2", "2-3", "2-4", "2-5"], "SOA Seminar Room 3": ["3-1", "3-2", "3-3",  "3-4", "3-5"],
          "SCIS1 GSR 2": ["2-1", "2-2", "2-3", "2-4", "2-5", "2-6", "2-7"], "SCIS1 GSR 3": ["3-1", "3-2", "3-3", "3-4", "3-5", "3-6"],
@@ -63,6 +63,7 @@ facility_selection = None
 level_selection = None
 room_selection = None
 date_selection = None
+time_selection = None
 def options(update, context):
     button = []
     for option in BUILDINGS:
@@ -80,6 +81,7 @@ def button(update, context):
         global level_selection
         global room_selection
         global date_selection
+        global time_selection
         choice = update.callback_query.data
         print(choice)
         if choice in BUILDINGS:
@@ -122,16 +124,25 @@ def button(update, context):
         elif building_selection and facility_selection and level_selection and not room_selection:
             room_selection = choice
             if not date_selection:
-                context.bot.send_message(chat_id=update.effective_chat.id, text="Please key in the dates")
+                context.bot.send_message(chat_id=update.effective_chat.id, text="Please key in the date(s)")
             
     except Exception as e:
         print(e)
         context.bot.send_message(chat_id=update.effective_chat.id, text="Building not found")
 
 def date_select(update, context):
+    global date_selection
+    global time_selection
     if building_selection and facility_selection and level_selection and room_selection and not date_selection:
-        print(update.message.text)
-
+        dates_given = update.message.text
+        dates_given = dates_given.split('-')
+        date_selection = dates_given
+        context.bot.send_message(chat_id=update.effective_chat.id, text="Please key in the timing")
+    elif building_selection and facility_selection and level_selection and room_selection and date_selection:
+        time_given = update.message.text
+        time_given = time_given.split('-')
+        time_selection = time_given
+        print(building_selection, facility_selection, room_selection, date_selection, time_selection)
 
 
 

@@ -1,5 +1,3 @@
-import requests
-
-
-res = requests.get(url="https://fbs.intranet.smu.edu.sg/")
-print(res.content)
+a = "170"
+b = a.split('-')
+print(b)
